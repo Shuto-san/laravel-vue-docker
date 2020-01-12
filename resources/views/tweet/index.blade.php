@@ -13,7 +13,7 @@
           <div class="contents">
             <section class="submit-form">
               <input v-model="tweet">
-              <button>送信</button>
+              <button @click="postTweet">送信</button>
             </section>
           </div>
         </header>
