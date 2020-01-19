@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Tweet;
+use App\Http\Services\TweetService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\TweetRequest;
 
 class TweetController extends Controller
 {
 
-    public function __construct()
+    protected $tweetService;
+
+    public function __construct(TweetService $tweet_service)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->only(['index']);
+        $this->tweetService = $tweet_service;
     }
 
     /**
@@ -43,14 +46,13 @@ class TweetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TweetRequest $request)
     {
-        $user = Auth::user();
-        $tweet = new Tweet();
-        $tweet->user_id = $user->id;
-        $tweet->nickname = $user->name;
-        $tweet->tweet = $request->tweet;
-        $tweet->save();
+        // validate posted tweet
+        $validatedTweet = $request->validated();
+
+        // save tweet in DB
+        $tweet = $this->tweetService->saveTweet($validatedTweet);
 
         return $tweet;
     }

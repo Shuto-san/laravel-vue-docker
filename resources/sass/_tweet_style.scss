@@ -1,3 +1,5 @@
-main {
-  color: red;
+.submit-form {
+    &.is-error {
+        border-color: $red:
+    }
 }
