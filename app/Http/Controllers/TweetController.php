@@ -25,7 +25,7 @@ class TweetController extends Controller
     public function index()
     {
         //
-        $tweets = Tweet::all();
+        $tweets = $this->tweetService->extractShowTweets();
         return view('tweet.index', compact('tweets'));
     }
 

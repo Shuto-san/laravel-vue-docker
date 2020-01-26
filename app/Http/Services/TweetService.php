@@ -1,11 +1,20 @@
 <?php
 
+namespace App\Http\Services;
+
 use App\Tweet;
 use Illuminate\Support\Facades\Auth;
 
-class TweetService {
+class TweetService
+{
 
-    public saveTweet($tweet)
+    public function extractShowTweets()
+    {
+        return Tweet::all();
+    }
+
+
+    public function saveTweet($tweet)
     {
         $user = Auth::user();
         $tweet = new Tweet();

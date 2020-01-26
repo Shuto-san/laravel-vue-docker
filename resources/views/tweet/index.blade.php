@@ -12,9 +12,9 @@
         <header>
             <div class="contents">
                 <section class="submit-form">
-                    <input v-model.trim="tweet" v-input="validateTweet" :class="{'is-error': !isValidated.tweet">
-                    <button @click="storeTweet" :disabled="!canSubmit">送信</button>
-                    <span v-if="!isValidated.tweet" v-text="validationErrorMessage">validation error</span>
+                    <input class="form" v-model.trim="tweet" :class="{'is-error': !canSubmit}">
+                    <button class="btn" @click="storeTweet" :disabled="!canSubmit">送信</button>
+                    <span v-if="!isValidated.tweet" v-text="validationErrorMessage.tweet" :class="{'is-error-message': !isValidated.tweet}"></span>
                 </section>
             </div>
         </header>

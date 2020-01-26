@@ -1,5 +1,16 @@
 .submit-form {
-    &.is-error {
-        border-color: $red:
+
+    .form {
+        height: 3em;
+        width: 150px;
+        border-radius: 2px;
     }
+    .is-error {
+        border-color: $red;
+
+        &-message {
+            color: $red;
+        }
+    }
+
 }

@@ -13,9 +13,9 @@ new Vue({
         validationErrorMessages: {
             max: "255文字以下で書いてください"
         },
-        validationErrorMessage: {{
+        validationErrorMessage: {
             tweet: null
-        }
+        },
         canSubmit: false,
     },
     methods: {
@@ -23,24 +23,6 @@ new Vue({
             this.preventDoubleClick();
 
             this.postTweet();
-        },
-
-        validateTweet() {
-            if (this.tweet === '') {
-                this.canSubmit = true;
-                return;
-            }
-
-            if (this.tweet.length > this.validationConditions.max) {
-                this.validationErrorMessage.tweet = this.validationErrorMessages.max;
-                this.isValidated.tweet = true;
-            }
-
-            this.validationErrorMessage.tweet = null;
-            this.isValidated.tweet = false;
-            this.canSubmit = false;
-
-            return;
         },
 
         preventDoubleClick() {
@@ -61,6 +43,28 @@ new Vue({
             .catch(function (error) {
                 console.log(error);
             });
+        }
+    },
+    watch: {
+        tweet: function(newTweet, oldTweet) {
+            if (this.tweet === '') {
+                this.canSubmit = false;
+                console.log('can not submit');
+                return;
+            }
+
+            if (this.tweet.length > this.validationConditions.max) {
+                this.validationErrorMessage.tweet = this.validationErrorMessages.max;
+                this.isValidated.tweet = false;
+                this.canSubmit = false;
+                return;
+            }
+
+            this.validationErrorMessage.tweet = null;
+            this.isValidated.tweet = true;
+            this.canSubmit = true;
+
+            return;
         }
     }
 });
