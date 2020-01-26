@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +48,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        $errorMessage = $exception->getMessage();
+        Log::error("Error occured : request_url=" . $request->fullUrl() . ', errorMessage=' . $errorMessage);
+
+        return response()->view("common/error")->setStatusCode(500);
     }
 }
