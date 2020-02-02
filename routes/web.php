@@ -20,5 +20,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/tweet/index', 'TweetController@index');
-
+Route::get('/tweet', 'TweetController@fetch');
 Route::post('/tweet', 'TweetController@store');

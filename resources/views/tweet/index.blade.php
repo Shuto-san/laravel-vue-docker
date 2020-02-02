@@ -20,11 +20,10 @@
         </header>
         <main>
             <div class="contents">
-                <ul>
-                    @foreach ($tweets as $tweet)
-                    <li>{{ $tweet->tweet }}</li>
-                    @endforeach
-                </ul>
+                <div v-for="tweet in tweets" :key="tweet.id" v-cloak>
+                    @{{ tweet.tweet }}
+                </div>
+                <infinite-loading @infinite="fetchTweets"></infinite-loading>
             </div>
         </main>
         <footer>
