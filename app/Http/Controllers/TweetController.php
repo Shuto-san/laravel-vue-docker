@@ -25,8 +25,18 @@ class TweetController extends Controller
     public function index()
     {
         //
-        $tweets = $this->tweetService->extractShowTweets();
-        return view('tweet.index', compact('tweets'));
+        return view('tweet.index');
+    }
+
+    public function fetch(Request $request) {
+        $decodedFetchedTweetIdList = json_decode($request->fetchedTweetIdList, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['errorMessage' => json_last_error_msg()],500);
+        }
+
+        $tweets = $this->tweetService->extractShowTweets($decodedFetchedTweetIdList, $request->page);
+
+        return response()->json(['tweets' => $tweets], 200);
     }
 
     /**
