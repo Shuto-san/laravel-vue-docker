@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Tweet;
 use Illuminate\Support\Facades\Auth;
+use App\RedisModel;
 
 class TweetService
 {
@@ -21,9 +22,14 @@ class TweetService
             return $tweets;
         }
 
+        $user = Auth::user();
+        $tweetIdList = $tweets->pluck('id')->toArray();
+        $likedTweetIdList = RedisModel::getTweetLikePerUser($user->id, $tweetIdList);
         $showableTweets = [];
-        foreach ($tweets as $tweet) {
+        foreach ($tweets as $index => $tweet) {
             if (!in_array($tweet->id, $fetchedTweetIdList)) {
+                $tweet->is_liked = $likedTweetIdList[$index];
+            \Log::info($tweet->is_liked);
                 $showableTweets[] = $tweet;
             }
         }
@@ -44,4 +50,21 @@ class TweetService
         return $tweet->tweet;
     }
 
+    public function updateLikeCount($tweetId, $likePushed)
+    {
+        $user = Auth::user();
+
+        if ($likePushed) {
+            if (RedisModel::setTweetLikePerUser($user->id, $tweetId, $likePushed)) {
+                RedisModel::incrTweetLikeCount($tweetId);
+            }
+        }
+        if (!$likePushed) {
+            if (RedisModel::delTweetLikePerUser($user->id, $tweetId, $likePushed)) {
+                RedisModel::decrTweetLikeCount($tweetId);
+            }
+        }
+
+        return $likePushed;
+    }
 }

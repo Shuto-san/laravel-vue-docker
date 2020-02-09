@@ -18,3 +18,31 @@
     }
 
 }
+
+.tweet{
+    &-card {
+        width: 400px;
+        height: 100px;
+        margin: 10px;
+        font-size: 16px;
+        background-color:#fff;
+        border-radius:5px;
+        -moz-box-shadow:0 2px 2px 0 rgba(0,0,0,0.2);
+        -webkit-box-shadow:0 2px 2px 0 rgba(0,0,0,0.2);
+        box-shadow:0 2px 2px 0 rgba(0,0,0,0.2);
+    }
+    &-contents {
+        width: 90%;
+        height: 90%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+
+        &-tweet {
+            flex-basis: 80%;
+        }
+        &-footer {
+            flex-basis: 20%;
+        }
+    }
+}
