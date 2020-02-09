@@ -67,6 +67,11 @@ class TweetController extends Controller
         return $tweet;
     }
 
+    public function postLike(Request $request)
+    {
+        $this->tweetService->updateLikeCount($request->tweetId, $request->likePushed);
+        return $request->tweetId;
+    }
     /**
      * Display the specified resource.
      *

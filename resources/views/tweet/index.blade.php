@@ -20,8 +20,18 @@
         </header>
         <main>
             <div class="contents">
-                <div v-for="tweet in tweets" :key="tweet.id" v-cloak>
-                    @{{ tweet.tweet }}
+                <div class="tweet-timeline">
+                    <div class="tweet-card" v-for="tweet in tweets" :key="tweet.id" v-cloak>
+                        <div class="tweet-contents">
+                            <div class="tweet-contents-tweet">
+                                <div>@{{ tweet.tweet }}</div>
+                            </div>
+                            <div class="tweet-contents-footer">
+                                    <i v-if="tweet.is_liked" class="fas fa-heart" @click="pushLike(tweet)"></i>
+                                    <i v-else class="far fa-heart" @click="pushLike(tweet)"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <infinite-loading @infinite="fetchTweets"></infinite-loading>
             </div>
