@@ -29,7 +29,6 @@ class TweetService
         foreach ($tweets as $index => $tweet) {
             if (!in_array($tweet->id, $fetchedTweetIdList)) {
                 $tweet->is_liked = $likedTweetIdList[$index];
-            \Log::info($tweet->is_liked);
                 $showableTweets[] = $tweet;
             }
         }
