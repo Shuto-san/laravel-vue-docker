@@ -24,10 +24,15 @@ class TweetController extends Controller
      */
     public function index()
     {
-        //
         return view('tweet.index');
     }
 
+    /**
+     * Fetch tweets from db and redis
+     *
+     * @param  Request $request
+     * @return Json
+     */
     public function fetch(Request $request) {
         $decodedFetchedTweetIdList = json_decode($request->fetchedTweetIdList, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -37,17 +42,6 @@ class TweetController extends Controller
         $tweets = $this->tweetService->extractShowTweets($decodedFetchedTweetIdList, $request->page);
 
         return response()->json(['tweets' => $tweets], 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-
     }
 
     /**
@@ -67,11 +61,28 @@ class TweetController extends Controller
         return $tweet;
     }
 
+    /**
+     * Store like per user in redis
+     * @param  Request $request tweetId, likePushed
+     * @return Json           tweetId
+     */
     public function postLike(Request $request)
     {
         $this->tweetService->updateLikeCount($request->tweetId, $request->likePushed);
         return $request->tweetId;
     }
+
+    /**
+     * Store report per user in redis and db
+     * @param  Request $request tweetId, likePushed
+     * @return Json           tweetId
+     */
+    public function postReport(Request $request)
+    {
+        $this->tweetService->updateReportCount($request->tweetId, $request->reportPushed);
+        return $request->tweetId;
+    }
+
     /**
      * Display the specified resource.
      *
@@ -79,17 +90,6 @@ class TweetController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Tweet $tweet)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Tweet  $tweet
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Tweet $tweet)
     {
         //
     }
@@ -103,7 +103,6 @@ class TweetController extends Controller
      */
     public function update(Request $request, Tweet $tweet)
     {
-        //
         $tweet->user_id = Auth::user()->id;
         $tweet->nickname = $request->nickname;
         $tweet->tweet = $request->tweet;

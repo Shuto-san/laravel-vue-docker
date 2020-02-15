@@ -11,9 +11,14 @@ class Tweet extends Model
      *
      * @var array
      */
-    protected $appends = ['is_liked'];
+    protected $appends = ['is_liked', 'is_reported'];
 
     public function getIsLikedAttribute() {
         return $this->attributes['is_liked'];
     }
+
+    public function getIsReportedAttribute() {
+        return $this->attributes['is_reported'];
+    }
+
 }
