@@ -2,9 +2,10 @@
 
 return [
 
-    'TWEET_BASE_KEY' => 'shootTweet',
+    'TWEET_BASE_KEY' => 'shoot_tweet',
     'USER_ACTION' => [
-        'LIKE' => 'like'
+        'LIKE' => 'like',
+        'REPORT' => 'report'
     ]
 
 ];

@@ -14,7 +14,8 @@ new Vue({
                 list: [],
                 debouncedList: []
             },
-            report: false,
+            report: {
+            },
             show: false
         },
         isValidated: {
@@ -30,6 +31,9 @@ new Vue({
             tweet: null
         },
         canSubmit: false,
+        modal: {
+            isDisplayed: false
+        }
     },
     methods: {
         fetchTweets($state) {
@@ -42,10 +46,10 @@ new Vue({
                 }
             })
             .then(response => {
-                console.log(response.data.tweets);
                 if (response.data.tweets.length) {
                     this.page++;
                     response.data.tweets.forEach (value => {
+                        value.isDisplayed = false;
                         this.tweets.push(value);
                     });
                     $state.loaded();
@@ -86,14 +90,26 @@ new Vue({
 
             })
             .catch(error => {
-                if (error.isExpire) {
-                    window.location.href = window.location.origin + '/ogiri/error/' + themeId + '?errorType=OUT_OF_VOTE_PERIOD';
-                } else if (error.isError) {
-                    window.location.href = window.location.origin + '/ogiri/error/' + themeId + '?errorType=VOTE_FROM_VOTE_PAGE';
-                }
-                window.location.href = window.location.origin + '/ogiri/error/' + themeId + '?errorType=OTHER_ERRORS';
             });
 
+        },
+
+        pushReport(tweet) {
+            console.log(tweet.id);
+            this.postReport(tweet.id, !tweet.is_reported);
+            tweet.is_reported = !tweet.is_reported;
+            tweet.isDisplayed = false;
+        },
+
+        postReport(tweetId, reportPushed) {
+            axios.post(window.location.origin + `/tweet/report`, {
+                tweetId: tweetId,
+                reportPushed: reportPushed
+            })
+            .then(response => {
+            })
+            .catch(error => {
+            });
         },
 
         preventDoubleClick() {
@@ -121,6 +137,14 @@ new Vue({
                 fetchedTweetIdList.push(this.tweets[i].id);
             }
             return fetchedTweetIdList;
+        },
+
+        openModal(tweet) {
+            tweet.isDisplayed = true;
+        },
+
+        closeModal(tweet) {
+            tweet.isDisplayed = false;
         }
     },
     watch: {

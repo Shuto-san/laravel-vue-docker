@@ -7,24 +7,24 @@ use Illuminate\Support\Facades\Redis;
 class RedisModel
 {
 
-    public static function setTweetLikePerUser ($userId, $tweetId, $likePushed)
+    public static function setActionToTweetPerUser ($actionType, $userId, $tweetId, $actionPushed)
     {
-        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, config('tweet.USER_ACTION.LIKE')]);
+        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, $actionType]);
         $expireDays = 60;
-        Redis::hset($baseKey, $tweetId, $likePushed);
+        Redis::hset($baseKey, $tweetId, $actionPushed);
         Redis::expire($baseKey, 60 * 60 * 24 * $expireDays);
     }
 
-    public static function getTweetLikePerUser ($userId, $tweetIdList)
+    public static function getActionToTweetPerUser ($actionType, $userId, $tweetIdList)
     {
-        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, config('tweet.USER_ACTION.LIKE')]);
+        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, $actionType]);
         return Redis::hMGet($baseKey, $tweetIdList);
     }
 
 
-    public static function delTweetLikePerUser ($userId, $tweetId)
+    public static function delActionToTweetPerUser ($actionType, $userId, $tweetId)
     {
-        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, config('tweet.USER_ACTION.LIKE')]);
+        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, $actionType]);
         $expireDays = 60;
         Redis::hdel($baseKey, $tweetId);
     }

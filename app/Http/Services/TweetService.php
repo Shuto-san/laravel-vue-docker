@@ -24,12 +24,13 @@ class TweetService
 
         $user = Auth::user();
         $tweetIdList = $tweets->pluck('id')->toArray();
-        $likedTweetIdList = RedisModel::getTweetLikePerUser($user->id, $tweetIdList);
+        $likedTweetIdList = RedisModel::getActionToTweetPerUser(config('tweet.USER_ACTION.LIKE'), $user->id, $tweetIdList);
+        $reportedTweetIdList = RedisModel::getActionToTweetPerUser(config('tweet.USER_ACTION.REPORT'), $user->id, $tweetIdList);
         $showableTweets = [];
         foreach ($tweets as $index => $tweet) {
             if (!in_array($tweet->id, $fetchedTweetIdList)) {
                 $tweet->is_liked = $likedTweetIdList[$index];
-            \Log::info($tweet->is_liked);
+                $tweet->is_reported = $reportedTweetIdList[$index];
                 $showableTweets[] = $tweet;
             }
         }
@@ -55,16 +56,34 @@ class TweetService
         $user = Auth::user();
 
         if ($likePushed) {
-            if (RedisModel::setTweetLikePerUser($user->id, $tweetId, $likePushed)) {
+            if (RedisModel::setActionToTweetPerUser(config('tweet.USER_ACTION.LIKE'), $user->id, $tweetId, $likePushed)) {
                 RedisModel::incrTweetLikeCount($tweetId);
             }
         }
         if (!$likePushed) {
-            if (RedisModel::delTweetLikePerUser($user->id, $tweetId, $likePushed)) {
+            if (RedisModel::delActionToTweetPerUser(config('tweet.USER_ACTION.LIKE'), $user->id, $tweetId, $likePushed)) {
                 RedisModel::decrTweetLikeCount($tweetId);
             }
         }
 
         return $likePushed;
     }
+
+    public function updateReportCount($tweetId, $reportPushed)
+    {
+        $user = Auth::user();
+
+        if ($reportPushed) {
+            if (RedisModel::setActionToTweetPerUser(config('tweet.USER_ACTION.REPORT'), $user->id, $tweetId, $reportPushed)) {
+                Tweet::whereTweetId($tweetId)->increment('report_count');
+            }
+        }
+        if (!$reportPushed) {
+            if (RedisModel::delActionToTweetPerUser(config('tweet.USER_ACTION.REPORT'), $user->id, $tweetId, $reportPushed)) {
+                Tweet::whereTweetId($tweetId)->decrement('report_count');
+            }
+        }
+
+    }
+
 }

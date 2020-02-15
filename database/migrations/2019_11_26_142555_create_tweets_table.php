@@ -19,7 +19,7 @@ class CreateTweetsTable extends Migration
             $table->unsignedInteger('theme_id')->nullable();
             $table->string('nickname');
             $table->string('tweet');
-            $table->unsignedInteger('vote_count')->default(0);
+            $table->unsignedInteger('like_count')->default(0);
             $table->unsignedInteger('report_count')->default(0);
             $table->unsignedInteger('show_count')->default(0);
             $table->unsignedTinyInteger('status')->default(1);
