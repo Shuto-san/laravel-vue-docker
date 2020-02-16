@@ -9,14 +9,7 @@
     </head>
     <body>
       <div id="app">
-        <header>
-            <strong>Hello, World</strong>
-        </header>
-        <main>
-            @{{ vueData }}
-        </main>
-        <footer>
-        </footer>
+              <login-component></login-component>
       </div>
         <script src="{{ mix('js/app.js') }}"></script>
     </body>
