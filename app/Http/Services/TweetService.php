@@ -26,11 +26,14 @@ class TweetService
         $tweetIdList = $tweets->pluck('id')->toArray();
         $likedTweetIdList = RedisModel::getActionToTweetPerUser(config('tweet.USER_ACTION.LIKE'), $user->id, $tweetIdList);
         $reportedTweetIdList = RedisModel::getActionToTweetPerUser(config('tweet.USER_ACTION.REPORT'), $user->id, $tweetIdList);
+        $viewedTweetIdList = RedisModel::getActionToTweetPerUser(config('tweet.USER_ACTION.IMPRESSION'), $user->id, $tweetIdList);
+
         $showableTweets = [];
         foreach ($tweets as $index => $tweet) {
             if (!in_array($tweet->id, $fetchedTweetIdList)) {
                 $tweet->is_liked = $likedTweetIdList[$index];
                 $tweet->is_reported = $reportedTweetIdList[$index];
+                $tweet->is_viewed = $viewedTweetIdList[$index];
                 $showableTweets[] = $tweet;
             }
         }
@@ -86,4 +89,10 @@ class TweetService
 
     }
 
+    public function updateImpressionCount($impressionTweetIdList)
+    {
+        $user = Auth::user();
+        RedisModel::setActionToTweetPerUser(config('tweet.USER_ACTION.IMPRESSION'), $user->id, $impressionTweetIdList, true);
+        RedisModel::incrTweetImpressionCount($impressionTweetIdList);
+    }
 }

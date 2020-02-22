@@ -21,7 +21,7 @@
         <main>
             <div class="contents">
                 <div class="tweet-timeline">
-                    <div class="tweet-card" v-for="tweet in tweets" :key="tweet.id" v-cloak>
+                    <div class="tweet-card" v-for="tweet in tweets" :key="tweet.id" :id="tweet.id" :class="{unviewed: !tweet.is_viewed}" v-cloak>
                         <div class="tweet-contents">
                             <div class="tweet-contents-tweet">
                                 <div>@{{ tweet.tweet }}</div>

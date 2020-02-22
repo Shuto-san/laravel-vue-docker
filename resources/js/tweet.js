@@ -16,7 +16,11 @@ new Vue({
             },
             report: {
             },
-            show: false
+            impression: {
+                tweetIdList: [],
+                postedTweetIdList: [],
+                updateTweetImpressionCountTimer: null
+            }
         },
         isValidated: {
             tweet: false
@@ -31,9 +35,10 @@ new Vue({
             tweet: null
         },
         canSubmit: false,
-        modal: {
-            isDisplayed: false
-        }
+    },
+    created: function() {
+        this.updateTweetImpressionCountTimer = setInterval(this.pushImpressionCount, 3000)
+        window.addEventListener('scroll', this.countImpression);
     },
     methods: {
         fetchTweets($state) {
@@ -62,6 +67,7 @@ new Vue({
             })
 
         },
+
         storeTweet() {
             this.preventDoubleClick();
             this.postTweet();
@@ -105,6 +111,43 @@ new Vue({
             axios.post(window.location.origin + `/tweet/report`, {
                 tweetId: tweetId,
                 reportPushed: reportPushed
+            })
+            .then(response => {
+            })
+            .catch(error => {
+            });
+        },
+
+        countImpression() {
+            let windowTop = pageYOffset;
+            let windowHeight = window.outerHeight;
+            let impressionTweetList = document.querySelectorAll(".unviewed");
+            for (let i = 0; i < impressionTweetList.length ; i++) {
+                let impressionTweetId = impressionTweetList[i].id;
+                let elemPosition = impressionTweetList[i].offsetTop + impressionTweetList[i].offsetHeight *3/4;
+                if (!(this.userAction.impression.tweetIdList.indexOf(impressionTweetId) >= 0)){
+                    if (elemPosition > windowTop && elemPosition < windowTop + windowHeight) {
+                        this.userAction.impression.tweetIdList.push(impressionTweetId);
+                    }
+                }
+            }
+        },
+
+        pushImpressionCount() {
+            let postTweetIdList = this.userAction.impression.tweetIdList.filter(id =>
+                !this.userAction.impression.postedTweetIdList.includes(id)
+            );
+            postTweetIdList.forEach(value => {
+                this.userAction.impression.postedTweetIdList.push(value);
+            });
+            if (postTweetIdList.length !== 0) {
+                this.postImpressionCount(postTweetIdList);
+            }
+        },
+
+        postImpressionCount(tweetIdList) {
+            axios.post(window.location.origin + `/tweet/impression`, {
+                impressionTweetIdList: JSON.stringify(tweetIdList)
             })
             .then(response => {
             })

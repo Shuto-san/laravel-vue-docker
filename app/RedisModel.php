@@ -11,8 +11,21 @@ class RedisModel
     {
         $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, $actionType]);
         $expireDays = 60;
-        Redis::hset($baseKey, $tweetId, $actionPushed);
+        if (is_array($tweetId)) {
+            self::msetActionToTweetPerUser($baseKey, $tweetId, $actionPushed);
+        } else {
+            Redis::hset($baseKey, $tweetId, $actionPushed);
+        }
         Redis::expire($baseKey, 60 * 60 * 24 * $expireDays);
+    }
+
+    private static function msetActionToTweetPerUser ($baseKey, $tweetIdList, $actionPushed)
+    {
+        $values = [];
+        foreach($tweetIdList as $tweetId) {
+            $values[$tweetId] = $actionPushed;
+        }
+        Redis::hMSet($baseKey, $values);
     }
 
     public static function getActionToTweetPerUser ($actionType, $userId, $tweetIdList)
@@ -43,5 +56,16 @@ class RedisModel
         $expireDays = 60;
         Redis::zincrby($baseKey, -1, $tweetId);
     }
+
+    public static function incrTweetImpressionCount($impressionTweetIdList)
+    {
+        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), config('tweet.USER_ACTION.IMPRESSION')]);
+        $expireDays = 60;
+        foreach($impressionTweetIdList as $tweetId) {
+            Redis::zincrby($baseKey, 1, $tweetId);
+        }
+        Redis::expire($baseKey, 60 * 60 * 24 * $expireDays);
+    }
+
 
 }
