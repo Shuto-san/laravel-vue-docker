@@ -24,3 +24,4 @@ Route::get('/tweet', 'TweetController@fetch');
 Route::post('/tweet', 'TweetController@store');
 Route::post('/tweet/like', 'TweetController@postLike');
 Route::post('/tweet/report', 'TweetController@postReport');
+Route::post('/tweet/impression', 'TweetController@postImpression');

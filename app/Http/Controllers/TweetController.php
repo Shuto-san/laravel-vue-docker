@@ -18,7 +18,7 @@ class TweetController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a tweet timeline.
      *
      * @return \Illuminate\Http\Response
      */
@@ -36,7 +36,7 @@ class TweetController extends Controller
     public function fetch(Request $request) {
         $decodedFetchedTweetIdList = json_decode($request->fetchedTweetIdList, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return response()->json(['errorMessage' => json_last_error_msg()],500);
+            return response()->json(['errorMessage' => json_last_error_msg()], 500);
         }
 
         $tweets = $this->tweetService->extractShowTweets($decodedFetchedTweetIdList, $request->page);
@@ -84,6 +84,24 @@ class TweetController extends Controller
     }
 
     /**
+     * [postImpression description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function postImpression(Request $request)
+    {
+        $decodedImpressionTweetIdList = json_decode($request->impressionTweetIdList, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return response()->json(['errorMessage' => json_last_error_msg()], 500);
+        }
+
+        $this->tweetService->updateImpressionCount($decodedImpressionTweetIdList);
+        return $request->impressionTweetIdList;
+
+    }
+
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Tweet  $tweet
@@ -92,21 +110,6 @@ class TweetController extends Controller
     public function show(Tweet $tweet)
     {
         //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Tweet  $tweet
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Tweet $tweet)
-    {
-        $tweet->user_id = Auth::user()->id;
-        $tweet->nickname = $request->nickname;
-        $tweet->tweet = $request->tweet;
-        $tweet->save();
     }
 
     /**

@@ -21,7 +21,7 @@ class CreateTweetsTable extends Migration
             $table->string('tweet');
             $table->unsignedInteger('like_count')->default(0);
             $table->unsignedInteger('report_count')->default(0);
-            $table->unsignedInteger('show_count')->default(0);
+            $table->unsignedInteger('impression_count')->default(0);
             $table->unsignedTinyInteger('status')->default(1);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
