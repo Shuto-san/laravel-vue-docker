@@ -11,12 +11,14 @@ class RedisModel
     {
         $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, $actionType]);
         $expireDays = 60;
+        $isSet = false;
         if (is_array($tweetId)) {
-            self::msetActionToTweetPerUser($baseKey, $tweetId, $actionPushed);
+            $isSet = self::msetActionToTweetPerUser($baseKey, $tweetId, $actionPushed);
         } else {
-            Redis::hset($baseKey, $tweetId, $actionPushed);
+            $isSet = Redis::hset($baseKey, $tweetId, $actionPushed);
         }
         Redis::expire($baseKey, 60 * 60 * 24 * $expireDays);
+        return $isSet;
     }
 
     private static function msetActionToTweetPerUser ($baseKey, $tweetIdList, $actionPushed)
@@ -25,7 +27,7 @@ class RedisModel
         foreach($tweetIdList as $tweetId) {
             $values[$tweetId] = $actionPushed;
         }
-        Redis::hMSet($baseKey, $values);
+        return Redis::hMSet($baseKey, $values);
     }
 
     public static function getActionToTweetPerUser ($actionType, $userId, $tweetIdList)
@@ -39,7 +41,7 @@ class RedisModel
     {
         $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $userId, $actionType]);
         $expireDays = 60;
-        Redis::hdel($baseKey, $tweetId);
+        return Redis::hdel($baseKey, $tweetId);
     }
 
     public static function incrTweetLikeCount($tweetId)
@@ -67,5 +69,10 @@ class RedisModel
         Redis::expire($baseKey, 60 * 60 * 24 * $expireDays);
     }
 
+    public static function zrangeTweetAction($actionType, $offset, $limit)
+    {
+        $baseKey = implode(':', [config('tweet.TWEET_BASE_KEY'), $actionType]);
+        return Redis::command('ZRANGE', [$baseKey, $offset, $limit, 'WITHSCORES']);
+    }
 
 }
