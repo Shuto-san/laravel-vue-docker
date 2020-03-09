@@ -8,16 +8,9 @@
         <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     </head>
     <body>
-      <div id="app">
-        <header>
-            <strong>Hello, World</strong>
-        </header>
-        <main>
-            @{{ vueData }}
-        </main>
-        <footer>
-        </footer>
+      <div id="welcome">
+          <welcome-component></welcome-component>
       </div>
-        <script src="{{ mix('js/app.js') }}"></script>
+        <script src="{{ mix('js/welcome.js') }}"></script>
     </body>
 </html>
