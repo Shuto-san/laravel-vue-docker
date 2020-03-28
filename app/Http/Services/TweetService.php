@@ -78,12 +78,12 @@ class TweetService
 
         if ($reportPushed) {
             if (RedisModel::setActionToTweetPerUser(config('tweet.USER_ACTION.REPORT'), $user->id, $tweetId, $reportPushed)) {
-                Tweet::whereTweetId($tweetId)->increment('report_count');
+                Tweet::whereId($tweetId)->increment('report_count');
             }
         }
         if (!$reportPushed) {
             if (RedisModel::delActionToTweetPerUser(config('tweet.USER_ACTION.REPORT'), $user->id, $tweetId, $reportPushed)) {
-                Tweet::whereTweetId($tweetId)->decrement('report_count');
+                Tweet::whereId($tweetId)->decrement('report_count');
             }
         }
 

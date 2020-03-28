@@ -51,6 +51,6 @@ class Handler extends ExceptionHandler
         $errorMessage = $exception->getMessage();
         Log::error("Error occured : request_url=" . $request->fullUrl() . ', errorMessage=' . $errorMessage);
 
-        return response()->view("common/error")->setStatusCode(500);
+        return parent::render($request, $exception);
     }
 }

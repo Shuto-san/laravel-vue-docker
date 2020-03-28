@@ -1,10 +1,20 @@
 require('./csrf.js');
+import '@mdi/font/css/materialdesignicons.css';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
+Vue.use(Vuetify);
 import InfiniteLoading from 'vue-infinite-loading';
 window._ = require('lodash');
-
+Vue.component('tweet-component', require('./components/TweetComponent.vue').default);
 Vue.component('infinite-loading', InfiniteLoading);
 new Vue({
     el: '#tweet',
+    vuetify: new Vuetify({
+        theme: {
+          dark: false,
+        },
+    }),
     data: {
         page: 0,
         tweets: [],
