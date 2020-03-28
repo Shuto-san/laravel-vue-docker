@@ -13,7 +13,7 @@
         sm="8"
         md="4"
       >
-            <form
+            <v-form
             ref="form"
             v-model="valid"
             lazy-validation>
@@ -32,7 +32,7 @@
                   @click="storeTweet"
                   :disabled="!canSubmit"
                   >Tweet!</v-btn>
-            </form>
+            </v-form>
         </v-col>
         </v-row>
 
@@ -245,6 +245,7 @@
         storeTweet() {
             this.preventDoubleClick();
             this.postTweet();
+            this.$refs.form.reset();
             this.tweet = '';
         },
 
@@ -255,6 +256,11 @@
             }
             this.userAction.like.debouncedList[tweet.id](tweet.id, !tweet.is_liked);
             tweet.is_liked = !tweet.is_liked;
+            if (tweet.is_liked) {
+                tweet.like_count++;
+            } else {
+                tweet.like_count--;
+            }
         },
 
         newPostLike(tweetId) {
@@ -275,7 +281,6 @@
         },
 
         pushReport(tweet) {
-            console.log(tweet.id);
             this.postReport(tweet.id, !tweet.is_reported);
             tweet.is_reported = !tweet.is_reported;
             tweet.isDisplayed = false;
@@ -373,8 +378,8 @@
         }
     },
     watch: {
-        tweet: function(newTweet, oldTweet) {
-            if (this.tweet.length <= this.validationConditions.min || this.tweet.length > this.validationConditions.max) {
+        tweet: function(newTweet, oldTweet){
+            if (newTweet.length <= this.validationConditions.min || newTweet.length > this.validationConditions.max) {
                 this.canSubmit = false;
                 return;
             }

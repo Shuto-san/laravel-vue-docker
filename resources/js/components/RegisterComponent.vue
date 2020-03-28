@@ -20,7 +20,7 @@
                 dark
                 flat
               >
-                <v-toolbar-title>Login form</v-toolbar-title>
+                <v-toolbar-title>Register form</v-toolbar-title>
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
@@ -36,23 +36,28 @@
                     label="Email"
                     name="email"
                     prepend-icon="email"
-                    type="text"
+                    type="email"
                     v-model="email"
                   />
-
                   <v-text-field
-                    id="password"
                     label="Password"
                     name="password"
                     prepend-icon="lock"
                     type="password"
                     v-model="password"
                   />
+                  <v-text-field
+                    label="Password Confirmation"
+                    name="password_confirmation"
+                    prepend-icon="lock"
+                    type="password"
+                    v-model="password_confirmation"
+                  />
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn @click="postLogin" color="primary">Register</v-btn>
+                <v-btn @click="postRegister" color="primary">Register</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -71,20 +76,23 @@
       return {
         name: "",
         email: "",
-        password: ""
+        password: "",
+        password_confirmation: ""
       }
     },
     methods: {
-        postLogin(){
+        postRegister(){
             axios.post(window.location.origin + `/register`, {
                 name: this.name,
                 email: this.email,
-                password: this.password
+                password: this.password,
+                password_confirmation: this.password_confirmation
             })
             .then(response => {
-                window.location.href = window.location.origin + `/home`;
+                window.location.href = window.location.origin + `/tweet/index`;
             })
             .catch(error => {
+                console.log("validation error");
             });
         }
     }
